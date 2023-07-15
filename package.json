@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "frontend": "npm run dev --prefix frontend",
-    "bulid": "npm run build --prefix frontend",
+    "build": "npm run build --prefix frontend",
     "start": "npm run start --prefix frontend"
   },
   "author": "",
@@ -29,8 +29,5 @@
     "ts-node": "^10.9.1",
     "typechain": "^8.2.0",
     "typescript": "^5.1.5"
-  },
-  "dependencies": {
-    "swr": "^2.2.0"
   }
 }
