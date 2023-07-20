@@ -53,6 +53,7 @@ const Register: React.FC = () => {
   const [input, setInput] = useState({
     name: "",
     bloodType: "",
+    emailAddress: "",
   });
 
   const handleAfterRegi = () => {
@@ -60,6 +61,7 @@ const Register: React.FC = () => {
     setInput({
       name: "",
       bloodType: "",
+      emailAddress: "",
     });
   };
 
@@ -128,6 +130,24 @@ const Register: React.FC = () => {
                 setInput({
                   ...input,
                   name: value,
+                })
+              }
+            />
+          </div>
+        </div>
+        <div className="">
+          <Label htmlFor="name">Email Address</Label>
+          <div>
+            <Input
+              className="w-2/3 sm:w-60 mx-auto"
+              id="emailAddress"
+              type="email"
+              placeholder="Email Address"
+              value={input.emailAddress}
+              onChange={({ target: { value } }) =>
+                setInput({
+                  ...input,
+                  emailAddress: value,
                 })
               }
             />

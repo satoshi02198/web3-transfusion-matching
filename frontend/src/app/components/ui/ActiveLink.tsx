@@ -12,10 +12,10 @@ const ActiveLink: React.FC<ActiveLinkProps> = ({ children, ...props }) => {
   const pathname = usePathname();
   let className = props.className || "";
   if (pathname === props.href) {
-    className = `${className} text-green-500`;
+    className = `${className} text-blue-600 `;
   }
   return (
-    <Link href={props.href} className={className}>
+    <Link href={props.href} className={`${className} hover:text-blue-700`}>
       {" "}
       {children}
     </Link>

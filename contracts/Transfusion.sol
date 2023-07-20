@@ -3,7 +3,7 @@
 pragma solidity ^0.8.9;
 import "hardhat/console.sol";
 
-contract Transplant {
+contract Transfusion {
 
    enum State {
     None, // default state 0
@@ -60,14 +60,10 @@ contract Transplant {
         _;
         
     }
-
     modifier onlyOwner(){
         require(msg.sender == contractOwner, 'Only owner can call');
         _;
     }
-
-
-    
 
 
 
@@ -132,14 +128,12 @@ contract Transplant {
     // to get Donor's state for donor
     function getDonorState(address _donorAddress) public view returns(State state){
         // require(_donorAddress == msg.sender, 'can not get another donor state');
-
         return donors[_donorAddress].state;
     }
 
     // to get Recipient's state for recipient
     function getRecipientState(address _recipientAddress) public view returns(State state){
         // require(_recipientAddress == msg.sender, 'can not get another recipient state');
-
         return recipients[_recipientAddress].state;
     }
 
@@ -147,10 +141,8 @@ contract Transplant {
 
     // to register donor
     function registerDonor(string memory _name, string memory _bloodType)public{
-    
         require(donors[msg.sender].state == State.None, "Donor: already registered");
         
-
         donorsNumber ++;
 
         // mapping the address to Donor
@@ -198,9 +190,6 @@ contract Transplant {
         emit RegisteredRecipient(recipientsNumber,msg.sender);
     }
 
-
-
-
     // to deregister
     function deregisterDonor(address _donorAddress) public  {
         require(_donorAddress == msg.sender, 'can not deregister from another address');
@@ -221,11 +210,7 @@ contract Transplant {
     }
 
 
-    
-
-    
     function attemptMatchForDonor(address _donorAddress, string memory _bloodType) private {
-
         for(uint256 i = 0; i < recipientAddresses.length; i++){
             address recipientAddr = recipientAddresses[i];
             if(recipientAddr == _donorAddress){
@@ -240,12 +225,10 @@ contract Transplant {
 
     function attemptMatchForRecipient(address _recipientAddress, string memory _bloodType) private {
         for(uint256 i = 0; i < donorAddresses.length; i++){
-
             address donorAddr = donorAddresses[i];
             if(donorAddr == _recipientAddress){
                 continue;
             }
-            
             if(donorAddr != _recipientAddress && donors[donorAddr].state == State.Registered && keccak256(bytes(donors[donorAddr].bloodType)) == keccak256(bytes(_bloodType))){
                 processMatch(donorAddr,_recipientAddress, _bloodType);
                 return;

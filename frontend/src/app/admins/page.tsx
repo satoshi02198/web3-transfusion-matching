@@ -10,6 +10,8 @@ import { recipientColumns } from "../components/ui/dataTable/columns/recipientCo
 import { matchingColumns } from "../components/ui/dataTable/columns/matchinColumns";
 import DataTable from "../components/ui/dataTable/DataTable";
 import { Skeleton } from "@/shadcnComponents/skeleton";
+import CheckUserDataWithKV from "../components/test/CheckUserDataWithKV";
+import CheckUserDataWithSql from "../components/test/CheckUserDataWithSql";
 
 type pageProps = {};
 
@@ -41,11 +43,11 @@ const Admins: React.FC<pageProps> = () => {
     allInfoIsLoading,
   } = useAdmin(contract, isAdmin, address, provider);
 
-  // "Donors" || "Recipients" || "Matching"
+  // "Donors" || "Recipients" || "Matching || "Emails"
   const [view, setView] = useState<string>("Donors");
 
   // tags for table
-  const tags = ["Donors", "Recipients", "Matching"];
+  const tags = ["Donors", "Recipients", "Matching", "KV", "SQL"];
   useEffect(() => {
     if (!isAdmin) {
       router.push("/");
@@ -107,6 +109,8 @@ const Admins: React.FC<pageProps> = () => {
                 forSearchString="matching"
               />
             )}
+          {view === "KV" && <CheckUserDataWithKV />}
+          {view === "SQL" && <CheckUserDataWithSql />}
         </div>
       )}
     </div>

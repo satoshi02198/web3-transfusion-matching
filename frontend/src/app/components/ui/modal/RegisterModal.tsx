@@ -15,6 +15,7 @@ import {
 import { DataType, withToast } from "../../../../../utils/toast";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { setUserData } from "../../../../../utils/actions";
 type DeregisterModalProps = {
   variants: string;
   deRegister?: (donorOrRecipient: string) => Promise<DataType>;
@@ -23,6 +24,7 @@ type DeregisterModalProps = {
     input: {
       name: string;
       bloodType: string;
+      emailAddress: string;
     },
     address: string | undefined
   ) => Promise<DataType>;
@@ -31,6 +33,7 @@ type DeregisterModalProps = {
   input?: {
     name: string;
     bloodType: string;
+    emailAddress: string;
   };
   handleAfterRegi?: () => void;
   address?: string | undefined;
@@ -57,6 +60,7 @@ const RegisterModal: React.FC<DeregisterModalProps> = ({
   input = {
     name: "",
     bloodType: "",
+    emailAddress: "",
   },
   handleAfterRegi = () => {},
   address = "",
@@ -106,7 +110,11 @@ const RegisterModal: React.FC<DeregisterModalProps> = ({
       <AlertDialog>
         <AlertDialogTrigger
           disabled={
-            !input.name || !input.bloodType || !reciOrDor || isTransactioning
+            !input.name ||
+            !input.bloodType ||
+            !reciOrDor ||
+            !input.emailAddress ||
+            isTransactioning
           }
           className="bg-slate-600 px-5 py-3 text-base text-slate-100 rounded-md hover:bg-slate-700 transition-all duration-200 disabled:bg-slate-300 disabled:cursor-default"
         >
@@ -121,6 +129,7 @@ const RegisterModal: React.FC<DeregisterModalProps> = ({
             </AlertDialogDescription>
             <AlertDialogDescription className="bg-slate-50 text-slate-900 px-2 py-4 space-y-2 rounded-lg">
               <p>Name: {input.name}</p>
+              <p>EmailAddress: {input.emailAddress}</p>
               <p>BloodType: {input.bloodType}</p>
             </AlertDialogDescription>
           </AlertDialogHeader>

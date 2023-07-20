@@ -10,7 +10,7 @@ type BaselayoutProps = {
 
 const Baselayout: React.FC<BaselayoutProps> = ({ children }) => {
   return (
-    <div className="max-w-7xl mx-auto pt-6 ">
+    <div className="max-w-7xl mx-auto ">
       <NavBar />
       <ToastContainer
         className="w-80 mt-4 ml-4 sm:w-[450px] sm:mt-0 sm:ml-0"
@@ -33,6 +33,7 @@ const Baselayout: React.FC<BaselayoutProps> = ({ children }) => {
         pauseOnFocusLoss
         autoClose={false}
       />
+      {/* <ToastContainer containerId="ofKv" /> */}
       {children}
       <Footer />
     </div>

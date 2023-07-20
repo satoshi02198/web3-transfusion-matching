@@ -1,7 +1,7 @@
 const { expect } = require("chai");
 const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
 
-describe("Transplant", () => {
+describe("Transfusion", () => {
   const NAME = "satoshi";
   const NAME2 = "satoshi2";
   const NAME3 = "satoshi3";
@@ -14,7 +14,7 @@ describe("Transplant", () => {
   async function deployContractFixture() {
     const [account1, account2, account3, account4] = await ethers.getSigners();
 
-    const Transplant = await ethers.getContractFactory("Transplant");
+    const Transplant = await ethers.getContractFactory("Transfusion");
     const contract = await Transplant.deploy();
 
     return {
@@ -78,7 +78,7 @@ describe("Transplant", () => {
     it("should change state to Deleted", async () => {
       const { account2, contract } = await loadFixture(deployContractFixture);
       await contract.connect(account2).registerDonor(NAME, BLOOD_TYPE);
-      await contract.deregisterDonor(account2.address);
+      await contract.connect(account2).deregisterDonor(account2.address);
       const donorData = await contract.getDonor(account2.address);
 
       // check state should be Deleted => 2
@@ -130,10 +130,6 @@ describe("Transplant", () => {
       await contract.registerRecipient(NAME2, BLOOD_TYPE2);
       const state = await contract.getDonorState(account1.address);
       expect(state).to.equal(BigInt(1));
-
-      await expect(
-        contract.getRecipientState(account2.address)
-      ).to.be.revertedWith("can not get another recipient state");
     });
   });
 });

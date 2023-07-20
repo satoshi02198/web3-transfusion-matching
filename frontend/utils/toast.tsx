@@ -1,9 +1,16 @@
 import { ToastContentProps, toast as toastifyToast } from "react-toastify";
+import { insertData } from "./actions";
 
 export type DataType = {
   transactionHash: string;
   methodName: string;
   isMatched?: boolean;
+  address?: string;
+  input?: {
+    name: string;
+    bloodType: string;
+    emailAddress: string;
+  };
 };
 
 type ErrorDataType = {
@@ -22,6 +29,48 @@ export const withToast = (promise: Promise<DataType>, variants: string) => {
       },
       success: {
         render({ data }: ToastContentProps<DataType>) {
+          if (data?.input) {
+            // to set user email with vercel postgres
+            const insertUserData = insertData(
+              data?.address as string,
+              data?.input.emailAddress,
+              data?.input.name,
+              data?.methodName
+            );
+            insertUserData
+              .then(() => console.log("successfully inserted user data"))
+              .catch((error) => {
+                toastifyToast.error(
+                  ({ closeToast, toastProps }) => (
+                    <div>
+                      <h2 className="font-semibold mb-2">
+                        Email Address was not registered.
+                      </h2>
+                      <p className="bg-red-300 rounded-lg px-2 py4">
+                        Sorry, something went wrong.
+                      </p>
+                      <p>
+                        Your email address is not registered even though you are
+                        registered in blockchain.
+                      </p>
+                      <p>
+                        because email address is not stored in blockchain as
+                        privacy reasons.
+                      </p>
+                      <p>Please contact us with your web3 address.</p>
+                      <h2 className="font-semibold mt-2">
+                        Error Detail for developer
+                      </h2>
+                      <p> Error detail: ${error.message}</p>
+                    </div>
+                  ),
+                  {
+                    containerId: "register-page",
+                  }
+                );
+              });
+          }
+
           // this data come from managaed/index.js and Marketplace/index.js
           return (
             <div className="space-y-2">
@@ -55,7 +104,6 @@ export const withToast = (promise: Promise<DataType>, variants: string) => {
             </div>
           );
         },
-        // other options
         icon: "🟢",
       },
       error: {

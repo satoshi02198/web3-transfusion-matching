@@ -15,7 +15,7 @@ import React, {
 } from "react";
 import { ethers } from "ethers";
 import contractAddress from "../../contracts/contract-address-localhost.json";
-import transplantArtifact from "../../contracts/Transplant.json";
+import transfusionArtifact from "../../contracts/Transfusion.json";
 
 type ProviderProps = {
   children: React.ReactNode;
@@ -40,6 +40,7 @@ const Web3Provider: React.FC<ProviderProps> = ({ children }) => {
   const [signer, setSigner] = useState<ethers.JsonRpcSigner | undefined>(
     undefined
   );
+
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
@@ -52,8 +53,8 @@ const Web3Provider: React.FC<ProviderProps> = ({ children }) => {
           setProvider(provider);
           if (provider) {
             const contract = new ethers.Contract(
-              contractAddress.Transplant,
-              transplantArtifact.abi,
+              contractAddress.Transfusion,
+              transfusionArtifact.abi,
               signer ? signer : provider
             );
             setContract(contract);
@@ -86,6 +87,7 @@ const Web3Provider: React.FC<ProviderProps> = ({ children }) => {
     checkAdmin();
   }, [contract]);
 
+  // helper function for connectWallet
   const getSigner = async () => {
     const signer = await provider?.getSigner();
     const address = await signer?.getAddress();
@@ -101,6 +103,9 @@ const Web3Provider: React.FC<ProviderProps> = ({ children }) => {
     if (!provider) alert("Please install MetaMask");
     await getSigner();
 
+    window.ethereum.on("chainChanged", async (chainId: number) => {
+      window.location.reload();
+    });
     window.ethereum.on("accountsChanged", async (accounts: string[]) => {
       if (accounts.length === 0) {
         setAddress(undefined);

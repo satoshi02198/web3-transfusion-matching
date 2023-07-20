@@ -8,8 +8,8 @@ async function main() {
   const address = await deployer.getAddress();
   console.log(`Deployer address: ${address}`);
 
-  const transplat = await hre.ethers.getContractFactory("Transplant");
-  console.log("Deploying Transplant...");
+  const transplat = await hre.ethers.getContractFactory("Transfusion");
+  console.log("Deploying Transfusion...");
   const contract = await transplat.deploy();
   console.log("🚀 ~ main ~ contract:", contract);
   await contract.waitForDeployment();
@@ -37,14 +37,14 @@ function saveContract(contractAddress) {
   fs.writeFileSync(
     path.join(contractDir, `contract-address-${network.name}.json`),
 
-    JSON.stringify({ Transplant: contractAddress }, null, 2)
+    JSON.stringify({ Transfusion: contractAddress }, null, 2)
   );
 
-  const TransplantArtifact = artifacts.readArtifactSync("Transplant");
+  const TransfusionArtifact = artifacts.readArtifactSync("Transfusion");
 
   fs.writeFileSync(
-    path.join(contractDir, "Transplant.json"),
-    JSON.stringify(TransplantArtifact, null, 2)
+    path.join(contractDir, "Transfusion.json"),
+    JSON.stringify(TransfusionArtifact, null, 2)
   );
 }
 
