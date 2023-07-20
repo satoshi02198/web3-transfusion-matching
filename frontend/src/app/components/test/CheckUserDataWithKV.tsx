@@ -43,7 +43,7 @@ const CheckUserDataWithKV: React.FC<ForKVProps> = () => {
         value={input}
         onChange={({ target: { value } }) => setInput(value)}
       />
-      <Button
+      {/* <Button
         onClick={async () => {
           const data = await getUserData(input);
           console.log(data);
@@ -51,7 +51,7 @@ const CheckUserDataWithKV: React.FC<ForKVProps> = () => {
         }}
       >
         Get User Data
-      </Button>
+      </Button> */}
       <Button
         onClick={async () => {
           const data = await getKeysWithKey();
@@ -95,8 +95,8 @@ const CheckUserDataWithKV: React.FC<ForKVProps> = () => {
       >
         set user data
       </Button>
-      <p>User Email: {user?.emailAddress}</p>
-      <p>User Name: {user?.name}</p>
+      {/* <p>User Email: {user?.emailAddress}</p>
+      <p>User Name: {user?.name}</p> */}
     </div>
   );
 };
