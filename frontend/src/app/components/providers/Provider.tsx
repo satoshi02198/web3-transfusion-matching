@@ -14,7 +14,7 @@ import React, {
   useMemo,
 } from "react";
 import { ethers } from "ethers";
-import contractAddress from "../../contracts/contract-address-localhost.json";
+import contractAddress from "../../contracts/contract-address-sepolia.json";
 import transfusionArtifact from "../../contracts/Transfusion.json";
 
 type ProviderProps = {
