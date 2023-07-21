@@ -4,7 +4,7 @@ import { insertData } from "./actions";
 export type DataType = {
   transactionHash: string;
   methodName: string;
-  donorOrRecipient: string;
+  donorOrRecipient?: string;
   isMatched?: boolean;
   address?: string;
   input?: {
@@ -30,7 +30,7 @@ export const withToast = (promise: Promise<DataType>, variants: string) => {
       },
       success: {
         render({ data }: ToastContentProps<DataType>) {
-          if (data?.input) {
+          if (data?.input && data?.donorOrRecipient) {
             // to set user email with vercel postgres and send thanks mail
             const insertUserData = insertData(
               data?.address as string,

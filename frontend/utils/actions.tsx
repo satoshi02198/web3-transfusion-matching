@@ -15,11 +15,11 @@ export const insertData = async (
   web3Address: string,
   emailAddress: string,
   name: string,
-  methodName: string
+  donorOrRecipient: string
 ) => {
   try {
     const res =
-      await sql`INSERT INTO userData5 (Web3Address, Email, Name, AsWhat) VALUES (${web3Address},${emailAddress},${name},${methodName});`;
+      await sql`INSERT INTO userData5 (Web3Address, Email, Name, AsWhat) VALUES (${web3Address},${emailAddress},${name},${donorOrRecipient});`;
     console.log("🚀 ~ insertData ~ res:", res);
     await sendThankYouEmail(emailAddress, name);
   } catch (error: any) {
