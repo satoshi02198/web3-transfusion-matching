@@ -72,10 +72,6 @@ export const donorColumns: ColumnDef<registeredDonor>[] = [
     id: "action",
     cell: ({ row }) => {
       const register = row.original;
-      console.log("🚀 ~ register:", register);
-      // const getTransaction = async (address: string) => {
-
-      // };
       return (
         <div className=" text-right">
           <DropdownMenu>
@@ -92,7 +88,6 @@ export const donorColumns: ColumnDef<registeredDonor>[] = [
                   navigator.clipboard.writeText(register.donorAddress);
                   toast("Copied!", {
                     containerId: "copy",
-                    closeButton: false,
                     icon: "🟢",
                   });
                 }}

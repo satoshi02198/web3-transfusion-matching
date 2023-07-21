@@ -53,12 +53,10 @@ contract Transfusion {
         contractOwner = msg.sender;
     }
 
-    
-
+    // modifiers
     modifier onlyAdmins(){
        require(admins[msg.sender] == true, "Only admin can call");
         _;
-        
     }
     modifier onlyOwner(){
         require(msg.sender == contractOwner, 'Only owner can call');
@@ -66,22 +64,18 @@ contract Transfusion {
     }
 
 
-
     // get contract owner address
     function getOwner() public view returns(address){
         return contractOwner;
     }
-
     // set the admin address
     function setAdmins(address newAdmin) public onlyOwner {
      admins[newAdmin] = true;
     }
-
     // get the admins address
     function checkAdmins(address _address) public view returns(bool){
         return admins[_address];
     }
-
     // get the donors id[]
     function getDonorsId() public view returns(uint[] memory  _donorsId) {
         return donorsId;
@@ -90,7 +84,6 @@ contract Transfusion {
     function getRecipientId() public view returns(uint[] memory  _recipientId) {
         return recipientId;
     }
-
     // get the donors addresses[]
     function getDonorAddresses() public view returns(address[] memory _donorAddresses) {
         return donorAddresses;
@@ -99,7 +92,6 @@ contract Transfusion {
     function getRecipientAddresses() public view returns(address[] memory _RecipientAddresses) {
         return recipientAddresses;
     }
-
     // get number of donors => uint
     function getDonorsNumber()public view returns(uint _donorsNumber) {
         return donorsNumber;
@@ -111,7 +103,6 @@ contract Transfusion {
     
 
     
-
     // to get Donor's info
     function getDonor(address _donorAddress) public view onlyAdmins returns(uint id, string memory name, string memory bloodType, State state) {
         require(donors[_donorAddress].state != State.None, "Donor: not registered"); 
@@ -162,7 +153,6 @@ contract Transfusion {
 
         // emit event donor's address
         emit RegisteredDonor(donorsNumber ,msg.sender);
-
     }
 
     // to register recipient
@@ -194,8 +184,6 @@ contract Transfusion {
     function deregisterDonor(address _donorAddress) public  {
         require(_donorAddress == msg.sender, 'can not deregister from another address');
         require(donors[_donorAddress].state == State.Registered, "Donor: can't be deleted, not registerd or already matched" );
-        
-
         Donor storage donor = donors[_donorAddress];
         donor.state = State.Deleted;
     }
@@ -203,8 +191,6 @@ contract Transfusion {
     function deregisterRecipient(address _recipientAddress) public {
         require(_recipientAddress == msg.sender, 'can not deregister from another address');
         require(recipients[_recipientAddress].state == State.Registered, "Recipient: can't be deleted, not registerd or already matched" );
-        
-
         Recipient storage recipient = recipients[_recipientAddress];
         recipient.state  = State.Deleted;
     }
@@ -241,8 +227,5 @@ contract Transfusion {
         recipients[_recipientAddress].state = State.Matched;
         emit Matched(_donorAddress, _recipientAddress, _bloodType);
     }
-
-
-    
    
 }

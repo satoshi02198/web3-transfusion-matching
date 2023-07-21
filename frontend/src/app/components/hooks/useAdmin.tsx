@@ -50,7 +50,6 @@ const toState = (state: Number) => {
       return "Deleted";
     case 3:
       return "Matched";
-
     default:
       return "";
   }
@@ -90,9 +89,7 @@ const useAdmin = (
         "getRecipient",
         recipientAddress
       );
-
       const eventsOfMatched = await getMatchedEvents(contract, "Matched");
-
       return {
         allDonorInfo,
         allRecipientInfo,

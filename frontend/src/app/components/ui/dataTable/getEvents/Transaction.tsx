@@ -15,6 +15,8 @@ const Transaction: React.FC<TransactionProps> = ({
   DonorOrRecipient,
 }) => {
   const { contract, provider } = useWeb3();
+
+  // FETCHER FOR GET TRANSACTION DATA
   const fetcher = async () => {
     try {
       const events = await getEvents(contract, DonorOrRecipient, provider);
@@ -39,8 +41,15 @@ const Transaction: React.FC<TransactionProps> = ({
   return (
     <>
       {!error && (
-        <div className="break-words">
-          <button onClick={() => alert(data)}>see Transaction</button>
+        <div>
+          <a
+            href={`https://sepolia.etherscan.io/tx/${data}`}
+            target="_blank"
+            rel="noopener"
+            className="hover:underline"
+          >
+            see Transaction
+          </a>
         </div>
       )}
     </>

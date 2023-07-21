@@ -1,16 +1,14 @@
-import { Button } from "@/shadcnComponents/button";
 import React, { useState } from "react";
+import { Button } from "@/shadcnComponents/button";
+import { Input } from "@/shadcnComponents/input";
 import {
   createTable,
   deleteData,
   deleteTable,
   getUserDataByWeb3Address,
 } from "../../../../utils/actions";
-import { Input } from "@/shadcnComponents/input";
 
-type CheckUserDataWithSqlProps = {};
-
-const CheckUserDataWithSql: React.FC<CheckUserDataWithSqlProps> = ({}) => {
+const CheckUserDataWithSql: React.FC = ({}) => {
   const [email, setEmail] = useState("");
   const [input, setInput] = useState("");
 
@@ -28,8 +26,8 @@ const CheckUserDataWithSql: React.FC<CheckUserDataWithSqlProps> = ({}) => {
         onClick={async () => {
           const res = await getUserDataByWeb3Address(input);
           const { rows } = res;
-          console.log("🚀 ~ onClick={ ~ rows:", rows);
-          setEmail(rows[0]?.email);
+          const email = rows[0]?.email;
+          setEmail(email);
         }}
       >
         Check Email

@@ -17,10 +17,7 @@ import {
   SelectValue,
 } from "@/shadcnComponents/select";
 
-//TODO
-// email send, when you are matched we will send email message
-// button disabled, when transaction going, so create useState of [isTransaction, setIsTransaction]
-
+// HELPER TO RENDER STATES
 const renderState = (state: Number | undefined) => {
   if (Number.isNaN(state)) {
     return "You are not registered";
@@ -32,7 +29,6 @@ const renderState = (state: Number | undefined) => {
       return "Deleted";
     case 3:
       return "Matched";
-
     default:
       return "";
   }
@@ -56,6 +52,7 @@ const Register: React.FC = () => {
     emailAddress: "",
   });
 
+  // TO RESET INPUTS
   const handleAfterRegi = () => {
     setReciOrDor("");
     setInput({
@@ -64,36 +61,6 @@ const Register: React.FC = () => {
       emailAddress: "",
     });
   };
-
-  //   const updateMatchingData = (
-  //     donor: string,
-  //     recipient: string,
-  //     bloodType: string
-  //   ) => {
-  //     setMatchingData({
-  //       donor: donor,
-  //       recipient: recipient,
-  //       bloodType: bloodType,
-  //     });
-  //   };
-  //   contract.on("Matched", updateMatchingData);
-  //   contract.on("RegisteredDonor", (id, donor) => {});
-  //   contract.on("RegisteredRecipient", (id, recipient) => {});
-
-  //   return () => {
-  //     contract.off("Matched", updateMatchingData);
-  //     contract.off("RegisteredDonor", (id, donor) => {});
-  //     contract.off("RegisteredRecipient", (id, recipient) => {});
-  //   };
-  // }, [contract, address]);
-
-  // if (!contract) {
-  //   return (
-  //     <div className="h-screen">
-  //       <p>You need to install web3 wallet to access</p>
-  //     </div>
-  //   );
-  // }
 
   return (
     <div className="h-full sm:h-screen py-2 sm:px-14 flex flex-col items-center sm:flex-row sm:justify-center sm:items-start sm:space-x-4">

@@ -1,66 +1,7 @@
 "use server";
 
 import nodemailer from "nodemailer";
-import { kv } from "@vercel/kv";
 import { sql } from "@vercel/postgres";
-
-// FOR VERCEL KV
-type SetUserData = {
-  userAddress: string;
-  emailAddress: string;
-  name: string;
-};
-
-export async function setUserData({
-  userAddress,
-  emailAddress,
-  name,
-}: SetUserData) {
-  try {
-    await kv.hset(userAddress, { name: name, emailAddress: emailAddress });
-    return "success";
-  } catch (error: any) {
-    console.error(error.message);
-  }
-}
-
-export const getUserData = async (userAddress: string) => {
-  const userData = await kv.hgetall(userAddress);
-  console.log("🚀 ~ getUserData ~ userData:", userData);
-  return userData;
-};
-
-// get keys with  KEYS * not recommended for production
-export const getKeysWithKey = async () => {
-  const allKeys = await kv.keys("*");
-  console.log("🚀 ~ getKeys ~ allKeys:", allKeys);
-  return allKeys;
-};
-
-export const pushToLists = async (listName: string, pushElement: any) => {
-  await kv.lpush(listName, pushElement);
-};
-
-export const getAllKeysWithScan = async () => {
-  let cursor = 0;
-  let keys: any = [];
-  while (true) {
-    const scanValue = await kv.scan(cursor);
-    cursor = scanValue[0];
-    scanValue[1].forEach((element) => {
-      keys.push(element);
-    });
-    if (cursor === 0) {
-      break;
-    }
-  }
-  console.log("🚀 ~ scan ~ keys:", keys);
-};
-
-export const getListValue = async (listName: string) => {
-  const listValue = await kv.lrange(listName, 0, -1);
-  console.log("🚀 ~ getListValue ~ listValue:", listValue);
-};
 
 // FOR VERCEL POSTGRES
 export const createTable = async () => {
@@ -69,6 +10,7 @@ export const createTable = async () => {
   console.log("🚀 ~ createTable ~ res:", res);
 };
 
+// INSERT DATA AND SEND THANK YOU EMAIL
 export const insertData = async (
   web3Address: string,
   emailAddress: string,
@@ -78,7 +20,6 @@ export const insertData = async (
   try {
     const res =
       await sql`INSERT INTO userData5 (Web3Address, Email, Name, AsWhat) VALUES (${web3Address},${emailAddress},${name},${methodName});`;
-
     console.log("🚀 ~ insertData ~ res:", res);
     await sendThankYouEmail(emailAddress, name);
   } catch (error: any) {
@@ -87,24 +28,29 @@ export const insertData = async (
   }
 };
 
+// TO GET EMAIL ADDRESS BY WEB3 ADDRESS
 export const getUserDataByWeb3Address = async (
   web3Address: string | undefined
 ) => {
+  console.log(web3Address);
   const res =
     await sql`SELECT * FROM userData5 WHERE Web3Address=${web3Address}`;
   console.log("🚀 ~ getUserDataByWeb3Address ~ res:", res);
   return res;
 };
 
+// TO DELETE DATA
 export async function deleteData(
   dataName: string,
   where: string,
   value: string
 ) {
+  // ${where} part cann't be paramiralised
   const res = await sql`DELETE FROM userData5 WHERE ${where}=${value}`;
   console.log("🚀 ~ deleteData ~ res:", res);
 }
 
+// TO DELETE TABLE
 export async function deleteTable(tableName: string) {
   const res = await sql`DROP TABLE satoshi;`;
   console.log("🚀 ~ deleteTable ~ res:", res);

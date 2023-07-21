@@ -1,16 +1,8 @@
 "use client";
 
-import { ethers } from "ethers";
 import { useWeb3 } from "./components/providers/Provider";
 import Skeleton from "./components/ui/Skeleton";
 import useDataSet from "./components/hooks/useDataSet";
-
-type DonorInfo = {
-  id: number | null;
-  name: string | null;
-  bloodType: string | null;
-  state: number | null;
-};
 
 export type AllDonorInfo = {
   address: string | undefined;
@@ -22,7 +14,6 @@ export type AllDonorInfo = {
 
 const Home = () => {
   const { contract, contractIsLoading } = useWeb3();
-
   const { donorAddress, recipientAddress, donorsStatus } = useDataSet(contract);
 
   const matchingNum = donorsStatus?.filter((state) => state === 3).length;
@@ -55,13 +46,6 @@ const Home = () => {
           ) : (
             <div>{pushToInstallWallet()}</div>
           )}
-
-          {/* {contract && (
-            <p>{donorAddress?.length ?? <Skeleton height="4" width="20" />}</p>
-          )}
-          {!contractIsLoading && !dataIsLoading && !contract && (
-            <div>{pushToInstallWallet()}</div>
-          )} */}
         </div>
         <div className="px-2 py-6 bg-slate-200 w-4/5 rounded-md">
           <h1 className="font-bold">Recipient numbers</h1>

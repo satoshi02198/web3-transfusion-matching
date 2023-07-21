@@ -15,6 +15,7 @@ import React, {
 } from "react";
 import { ethers } from "ethers";
 import contractAddress from "../../contracts/contract-address-sepolia.json";
+// import contractAddress from "../../contracts/contract-address-localhost.json";
 import transfusionArtifact from "../../contracts/Transfusion.json";
 
 type ProviderProps = {
@@ -34,17 +35,20 @@ type Web3ContextType = {
 const Web3Context = createContext<Web3ContextType | null>(null);
 
 const Web3Provider: React.FC<ProviderProps> = ({ children }) => {
+  // WEB3 APIS
   const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
   const [contract, setContract] = useState<ethers.Contract | null>(null);
   const [address, setAddress] = useState<string | undefined>(undefined);
   const [signer, setSigner] = useState<ethers.JsonRpcSigner | undefined>(
     undefined
   );
-
+  // FOR REQUIRE INSTALL VARIABLE
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  // CHECK FOR ADMIN
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
+  // CONTRACT INITIALIZATION
   useEffect(() => {
     const initContract = async () => {
       try {
@@ -64,7 +68,6 @@ const Web3Provider: React.FC<ProviderProps> = ({ children }) => {
           }
         } else {
           setContract(null);
-
           console.log("no web3 provider detected");
         }
       } finally {
@@ -91,7 +94,6 @@ const Web3Provider: React.FC<ProviderProps> = ({ children }) => {
   const getSigner = async () => {
     const signer = await provider?.getSigner();
     const address = await signer?.getAddress();
-
     if (!signer || !address) {
       throw new Error("can't get signer or address.");
     }
@@ -99,10 +101,10 @@ const Web3Provider: React.FC<ProviderProps> = ({ children }) => {
     setSigner(signer);
   };
 
+  // TO CONNECT TO WEB3 WALLET
   const connectWallet = async () => {
     if (!provider) alert("Please install MetaMask");
     await getSigner();
-
     window.ethereum.on("chainChanged", async (chainId: number) => {
       window.location.reload();
     });
@@ -112,11 +114,11 @@ const Web3Provider: React.FC<ProviderProps> = ({ children }) => {
         setSigner(undefined);
         return;
       }
-
       await getSigner();
     });
   };
 
+  // TO CACHE WEB3 APIS
   const _web3 = useMemo(() => {
     return {
       contract: contract,

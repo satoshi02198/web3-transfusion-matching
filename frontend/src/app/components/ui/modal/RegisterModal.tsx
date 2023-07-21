@@ -15,7 +15,6 @@ import {
 import { DataType, withToast } from "../../../../../utils/toast";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { setUserData } from "../../../../../utils/actions";
 type DeregisterModalProps = {
   variants: string;
   deRegister?: (donorOrRecipient: string) => Promise<DataType>;
@@ -38,18 +37,6 @@ type DeregisterModalProps = {
   handleAfterRegi?: () => void;
   address?: string | undefined;
 };
-
-// interface ToastItem<Data = {}> {
-//   id: Id;
-//   content: React.ReactNode;
-//   theme?: Theme;
-//   type?: TypeOptions;
-//   isLoading?: boolean;
-//   containerId?: Id;
-//   data: Data;
-//   icon?: React.ReactNode | false;
-//   status: "added" | "removed" | "updated";
-// }
 
 const RegisterModal: React.FC<DeregisterModalProps> = ({
   variants,

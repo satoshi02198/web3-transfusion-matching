@@ -1,21 +1,19 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { useWeb3 } from "../providers/Provider";
 import ActiveLink from "./ActiveLink";
 import { Button } from "@/shadcnComponents/button";
 import useNetwork from "../hooks/useNetwork";
 import Image from "next/image";
 
-type NavBarProps = {};
-
-const NavBar: React.FC<NavBarProps> = () => {
+const NavBar: React.FC = () => {
   const { connectWallet, address, isAdmin, provider } = useWeb3();
   const { currentNetwork, targetNetwork, switchToTargetNetwork } =
     useNetwork(provider);
 
   return (
-    <nav className="">
+    <nav>
       <div>
         {address && currentNetwork?.name !== targetNetwork.name ? (
           <div className="relative flex flex-col sm:flex-row sm:space-x-4 items-center justify-center text-slate-700 bg-blue-200  py-3 ">
@@ -39,7 +37,6 @@ const NavBar: React.FC<NavBarProps> = () => {
             <ActiveLink href="/">Home</ActiveLink>
             <ActiveLink href="/register">Register</ActiveLink>
             {isAdmin && <ActiveLink href="/admins">Admins page</ActiveLink>}
-            <ActiveLink href="/data">data</ActiveLink>
           </div>
           {address ? (
             <div className="flex flex-col sm:flex-row items-center justify-center pt-2 text-left text-slate-700">
@@ -49,7 +46,6 @@ const NavBar: React.FC<NavBarProps> = () => {
                   <span className="text-indigo-600 font-bold">Admin</span>
                 )}
               </div>
-
               <p className="sm:ml-4">
                 {address.slice(0, 6) + "...." + address.slice(-6)}
               </p>

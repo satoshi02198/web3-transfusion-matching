@@ -4,6 +4,7 @@ import { insertData } from "./actions";
 export type DataType = {
   transactionHash: string;
   methodName: string;
+  donorOrRecipient: string;
   isMatched?: boolean;
   address?: string;
   input?: {
@@ -30,14 +31,15 @@ export const withToast = (promise: Promise<DataType>, variants: string) => {
       success: {
         render({ data }: ToastContentProps<DataType>) {
           if (data?.input) {
-            // to set user email with vercel postgres
+            // to set user email with vercel postgres and send thanks mail
             const insertUserData = insertData(
               data?.address as string,
               data?.input.emailAddress,
               data?.input.name,
-              data?.methodName
+              data?.donorOrRecipient
             );
             insertUserData
+              // IF SUCCESS JUST CONSOLE IF NOT TOAST ERROR
               .then(() => console.log("successfully inserted user data"))
               .catch((error) => {
                 toastifyToast.error(
@@ -71,17 +73,14 @@ export const withToast = (promise: Promise<DataType>, variants: string) => {
               });
           }
 
-          // this data come from managaed/index.js and Marketplace/index.js
           return (
             <div className="space-y-2">
               <h2 className="font-semibold">{data?.methodName} Success!</h2>
-
               {data?.isMatched && (
                 <div className="mb-4 bg-green-100 p-4 rounded-md">
                   <p className="font-semibold ">
                     You also are matched with someone who are waiting.
                   </p>
-
                   <p className="">
                     We will contract to your Email you provided.
                   </p>
@@ -91,7 +90,7 @@ export const withToast = (promise: Promise<DataType>, variants: string) => {
                 You can check the transaction
               </p>
               <a
-                href="/"
+                href={`https://sepolia.etherscan.io/tx/${data?.transactionHash}`}
                 target="_blank"
                 rel="noopener"
                 className="hover:underline text-slate-600 text-sm"

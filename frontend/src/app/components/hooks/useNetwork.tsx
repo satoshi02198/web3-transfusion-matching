@@ -1,13 +1,14 @@
 import { BytesLike, ethers, id, toUtf8Bytes, toUtf8String } from "ethers";
 import useSWR from "swr";
 
-const targetNetworkId = process.env.NEXT_PUBLIC_TARGET_CHAIN_ID;
-
+// HELPER FUNCTION TO CONVERT NUMBER TO UNPADDED HEX
 const toUnpaddedHex = (number: number) => {
   const unpaddedHex = number.toString(16);
   const prefixedHex = "0x" + unpaddedHex;
   return prefixedHex;
 };
+
+// NETWORKS INFORMATION
 const NETWORKS = {
   1: {
     name: "Ethereum Mainnet",
@@ -25,7 +26,6 @@ const NETWORKS = {
     rpcUrls: ["https://rpc.ankr.com/eth_goerli"],
     blockExplorerUrls: ["https://goerli.etherscan.io/"],
   },
-
   31337: {
     name: "Hardhat Testnet",
     chainId: toUnpaddedHex(31337),
@@ -43,16 +43,9 @@ const NETWORKS = {
     blockExplorerUrls: ["https://sepolia.etherscan.io/"],
   },
   // 56: "Binance Smart Chain",
-  // 11155111: "Sepolia",
 };
 
-// let sample = 31337; // change this to your actual network ID
-// let bytes = new Uint8Array([sample]);
-// console.log("🚀 ~ bytes:", bytes);
-// let hexString = ethers.hexlify(bytes);
-// console.log(hexString);
-// console.log(toUnpaddedHex(sample));
-
+const targetNetworkId = process.env.NEXT_PUBLIC_TARGET_CHAIN_ID;
 const targetNetwork =
   NETWORKS[
     Number(process.env.NEXT_PUBLIC_TARGET_CHAIN_ID) as keyof typeof NETWORKS
@@ -60,10 +53,9 @@ const targetNetwork =
 
 console.log("🚀 ~ targetNetwork:", targetNetwork);
 
-type useNetworkProps = {};
-
+// HOOK
 const useNetwork = (provider: ethers.BrowserProvider | null) => {
-  const { data, error, isLoading } = useSWR(
+  const { data, error } = useSWR(
     () => (provider ? "web3/network" : null),
     async () => {
       const network = await provider?.getNetwork();
@@ -79,6 +71,8 @@ const useNetwork = (provider: ethers.BrowserProvider | null) => {
       };
     }
   );
+
+  // TO SWITCH TO TARGET NETWORK
   const switchToTargetNetwork = async () => {
     try {
       await provider?.send("wallet_switchEthereumChain", [
@@ -87,7 +81,7 @@ const useNetwork = (provider: ethers.BrowserProvider | null) => {
         },
       ]);
     } catch (switchError: any) {
-      console.log("error is gotten");
+      console.error(switchError.message);
       // in case, user didn't add the target network
       if (switchError.error.code === 4902) {
         try {
@@ -103,6 +97,7 @@ const useNetwork = (provider: ethers.BrowserProvider | null) => {
           ]);
         } catch (addError: any) {
           console.error(addError.message);
+          console.log("Adding target network failed");
         }
       }
     }

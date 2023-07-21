@@ -20,7 +20,6 @@ const Baselayout: React.FC<BaselayoutProps> = ({ children }) => {
         enableMultiContainer
         position="top-right"
         closeOnClick={true}
-        pauseOnFocusLoss
         autoClose={false}
       />
       <ToastContainer
@@ -30,10 +29,8 @@ const Baselayout: React.FC<BaselayoutProps> = ({ children }) => {
         enableMultiContainer
         position="top-center"
         closeButton={false}
-        pauseOnFocusLoss
-        autoClose={false}
+        autoClose={3000}
       />
-      {/* <ToastContainer containerId="ofKv" /> */}
       {children}
       <Footer />
     </div>

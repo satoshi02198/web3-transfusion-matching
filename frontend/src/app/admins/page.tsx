@@ -10,10 +10,7 @@ import { recipientColumns } from "../components/ui/dataTable/columns/recipientCo
 import { matchingColumns } from "../components/ui/dataTable/columns/matchinColumns";
 import DataTable from "../components/ui/dataTable/DataTable";
 import { Skeleton } from "@/shadcnComponents/skeleton";
-import CheckUserDataWithKV from "../components/test/CheckUserDataWithKV";
-import CheckUserDataWithSql from "../components/test/CheckUserDataWithSql";
-
-type pageProps = {};
+import CheckUserDataWithSql from "../components/forFetch/CheckUserDataWithSql";
 
 export type AllDonorInfo = {
   id: number | null;
@@ -32,7 +29,7 @@ export type AllRecipientInfo = {
   time: string;
 };
 
-const Admins: React.FC<pageProps> = () => {
+const Admins: React.FC = () => {
   const router = useRouter();
   const { contract, provider, address, isAdmin } = useWeb3();
   const {
@@ -47,7 +44,8 @@ const Admins: React.FC<pageProps> = () => {
   const [view, setView] = useState<string>("Donors");
 
   // tags for table
-  const tags = ["Donors", "Recipients", "Matching", "KV", "SQL"];
+  const tags = ["Donors", "Recipients", "Matching", "SQL"];
+
   useEffect(() => {
     if (!isAdmin) {
       router.push("/");
@@ -61,7 +59,6 @@ const Admins: React.FC<pageProps> = () => {
 
   return (
     <div className="h-screen p-6">
-      {}
       <div className="flex space-x-2 text-lg font-semibold px-1">
         {tags.map((tag, index) => (
           <Button
@@ -109,7 +106,6 @@ const Admins: React.FC<pageProps> = () => {
                 forSearchString="matching"
               />
             )}
-          {view === "KV" && <CheckUserDataWithKV />}
           {view === "SQL" && <CheckUserDataWithSql />}
         </div>
       )}
