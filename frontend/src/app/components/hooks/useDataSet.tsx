@@ -8,22 +8,28 @@ const useDataSet = (contract: Contract | null) => {
     () => (contract ? "web3/addresses/status" : null),
 
     async () => {
-      const donorAddress = await contract?.getDonorAddresses();
-      const recipientAddress = await contract?.getRecipientAddresses();
+      try {
+        const donorAddress = await contract?.getDonorAddresses();
+        const recipientAddress = await contract?.getRecipientAddresses();
 
-      const donorsStatus = await statusArr(donorAddress, "getDonorState");
-      const recipientsStatus = await statusArr(
-        recipientAddress,
-        "getRecipientState"
-      );
+        const donorsStatus = await statusArr(donorAddress, "getDonorState");
+        const recipientsStatus = await statusArr(
+          recipientAddress,
+          "getRecipientState"
+        );
 
-      return {
-        addresses: { donorAddress, recipientAddress },
-        status: {
-          donorsStatus,
-          recipientsStatus,
-        },
-      };
+        return {
+          addresses: { donorAddress, recipientAddress },
+          status: {
+            donorsStatus,
+            recipientsStatus,
+          },
+        };
+      } catch (error: any) {
+        console.log("catching error on useSWR in useDataSet");
+        console.log(error.message);
+        console.log("error code", error.data.error.code);
+      }
     }
   );
 
