@@ -5,7 +5,7 @@ const retry = async (fn: Function, maxRetries: number, maxBackoff: number) => {
     try {
       return await fn();
     } catch (error: any) {
-      if (error.code === 429) {
+      if (error.code === -32603) {
         let waitTime = Math.min(
           2 ** retryCount * 1000 + Math.random() * 1000,
           maxBackoff

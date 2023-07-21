@@ -172,6 +172,7 @@ const useAdmin = (
     }
   };
 
+  //  to get all information with retry located utils/retry.tsx
   const getAllInfoWithRetries = async (
     contract: Contract | null,
     method: string,
