@@ -56,9 +56,8 @@ const useDataSet = (contract: Contract | null) => {
         );
       }
     } catch (error: any) {
-      console.log("catching error");
+      console.log("catching error in statusArr in useDataSet");
       console.log(error.message);
-      console.log("error code", error.data.error.code);
     }
   };
 

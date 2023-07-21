@@ -84,22 +84,27 @@ const useAdmin = (
         ? "web3/allInfo"
         : null,
     async () => {
-      const allDonorInfo = await getAllInfoWithRetries(
-        contract,
-        "getDonor",
-        donorAddress
-      );
-      const allRecipientInfo = await getAllInfoWithRetries(
-        contract,
-        "getRecipient",
-        recipientAddress
-      );
-      const eventsOfMatched = await getMatchedEvents(contract, "Matched");
-      return {
-        allDonorInfo,
-        allRecipientInfo,
-        eventsOfMatched,
-      };
+      try {
+        const allDonorInfo = await getAllInfoWithRetries(
+          contract,
+          "getDonor",
+          donorAddress
+        );
+        const allRecipientInfo = await getAllInfoWithRetries(
+          contract,
+          "getRecipient",
+          recipientAddress
+        );
+        const eventsOfMatched = await getMatchedEvents(contract, "Matched");
+        return {
+          allDonorInfo,
+          allRecipientInfo,
+          eventsOfMatched,
+        };
+      } catch (error: any) {
+        console.log("catching error on useSWE in useAdmin");
+        console.error(error.message);
+      }
     }
   );
 
