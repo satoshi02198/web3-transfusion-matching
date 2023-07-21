@@ -50,7 +50,9 @@ const useDataSet = (contract: Contract | null) => {
         );
       }
     } catch (error: any) {
+      console.log("catching error");
       console.log(error.message);
+      console.log("error code", error.data.error.code);
     }
   };
 

@@ -9,6 +9,7 @@ export const retry = async (
     try {
       return await fn();
     } catch (error: any) {
+      console.log("catching error");
       if (error.data.error.code === 429) {
         let waitTime = Math.min(
           2 ** retryCount * 1000 + Math.random() * 1000,
