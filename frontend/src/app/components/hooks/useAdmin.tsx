@@ -99,72 +99,154 @@ const useAdmin = (
   );
 
   // to get all Infomations depends on the arguments "getDonor" and "getRecipient"
+  // const getAllInfo = async (
+  //   contract: Contract | null,
+  //   method: string,
+  //   addresses: never[]
+  // ) => {
+  //   try {
+  //     if (contract && addresses.length > 0) {
+  //       const Info = [];
+  //       for (const address of addresses) {
+  //         const tx = await contract[method](address);
+  //         if (!tx) {
+  //           continue;
+  //         }
+  //         // to get timestamp
+  //         const eventSetters: Record<MethodType, string> = {
+  //           getDonor: "RegisteredDonor",
+  //           getRecipient: "RegisteredRecipient",
+  //         };
+  //         const eventSetter = eventSetters[method as MethodType];
+
+  //         const events = await getEvents(contract, eventSetter, provider);
+  //         if (!events) {
+  //           throw new Error(`no events of ${method}`);
+  //         }
+  //         const timestamps = [];
+  //         for (const log of events) {
+  //           // to make sure args in log
+  //           if ("args" in log && log.args[1] === address) {
+  //             const res = await getTimestamp(log, provider);
+  //             timestamps.push(res);
+  //           }
+  //         }
+  //         const filteredTimestamp = timestamps.filter((event) => {
+  //           return event !== undefined;
+  //         })[0];
+  //         if (method === "getDonor") {
+  //           const info = {
+  //             id: Number(tx[0]),
+  //             donorAddress: address as string,
+  //             name: tx[1] as string,
+  //             bloodType: tx[2] as string,
+  //             state: toState(Number(tx[3])),
+  //             time: filteredTimestamp as string,
+  //           };
+
+  //           Info.push(info);
+  //         } else if (method === "getRecipient") {
+  //           const info = {
+  //             id: Number(tx[0]),
+  //             recipientAddress: address as string,
+  //             name: tx[1] as string,
+  //             bloodType: tx[2] as string,
+  //             state: toState(Number(tx[3])),
+  //             time: filteredTimestamp as string,
+  //           };
+
+  //           Info.push(info);
+  //         }
+  //       }
+
+  //       return Info;
+  //     } else {
+  //       console.log(`no addresses[] to get info for ${method}`);
+  //     }
+  //   } catch (error: any) {
+  //     console.log(error.message);
+  //   }
+  // };
+  // to get all Infomations depends on the arguments "getDonor" and "getRecipient"
   const getAllInfo = async (
     contract: Contract | null,
     method: string,
     addresses: never[]
   ) => {
-    try {
-      if (contract && addresses.length > 0) {
-        const Info = [];
-        for (const address of addresses) {
-          const tx = await contract[method](address);
-          if (!tx) {
-            continue;
-          }
-          // to get timestamp
-          const eventSetters: Record<MethodType, string> = {
-            getDonor: "RegisteredDonor",
-            getRecipient: "RegisteredRecipient",
-          };
-          const eventSetter = eventSetters[method as MethodType];
+    const maxRetries = 10;
+    const maxBackoff = 64000;
 
-          const events = await getEvents(contract, eventSetter, provider);
-          if (!events) {
-            throw new Error(`no events of ${method}`);
-          }
-          const timestamps = [];
-          for (const log of events) {
-            // to make sure args in log
-            if ("args" in log && log.args[1] === address) {
-              const res = await getTimestamp(log, provider);
-              timestamps.push(res);
+    let retryCount = 0;
+    while (retryCount < maxRetries) {
+      try {
+        if (contract && addresses.length > 0) {
+          const Info = [];
+          for (const address of addresses) {
+            const tx = await contract[method](address);
+            if (!tx) {
+              continue;
+            }
+            // to get timestamp
+            const eventSetters: Record<MethodType, string> = {
+              getDonor: "RegisteredDonor",
+              getRecipient: "RegisteredRecipient",
+            };
+            const eventSetter = eventSetters[method as MethodType];
+
+            const events = await getEvents(contract, eventSetter, provider);
+            if (!events) {
+              throw new Error(`no events of ${method}`);
+            }
+            const timestamps = [];
+            for (const log of events) {
+              // to make sure args in log
+              if ("args" in log && log.args[1] === address) {
+                const res = await getTimestamp(log, provider);
+                timestamps.push(res);
+              }
+            }
+            const filteredTimestamp = timestamps.filter((event) => {
+              return event !== undefined;
+            })[0];
+            if (method === "getDonor") {
+              const info = {
+                id: Number(tx[0]),
+                donorAddress: address as string,
+                name: tx[1] as string,
+                bloodType: tx[2] as string,
+                state: toState(Number(tx[3])),
+                time: filteredTimestamp as string,
+              };
+
+              Info.push(info);
+            } else if (method === "getRecipient") {
+              const info = {
+                id: Number(tx[0]),
+                recipientAddress: address as string,
+                name: tx[1] as string,
+                bloodType: tx[2] as string,
+                state: toState(Number(tx[3])),
+                time: filteredTimestamp as string,
+              };
+
+              Info.push(info);
             }
           }
-          const filteredTimestamp = timestamps.filter((event) => {
-            return event !== undefined;
-          })[0];
-          if (method === "getDonor") {
-            const info = {
-              id: Number(tx[0]),
-              donorAddress: address as string,
-              name: tx[1] as string,
-              bloodType: tx[2] as string,
-              state: toState(Number(tx[3])),
-              time: filteredTimestamp as string,
-            };
 
-            Info.push(info);
-          } else if (method === "getRecipient") {
-            const info = {
-              id: Number(tx[0]),
-              recipientAddress: address as string,
-              name: tx[1] as string,
-              bloodType: tx[2] as string,
-              state: toState(Number(tx[3])),
-              time: filteredTimestamp as string,
-            };
-
-            Info.push(info);
-          }
+          return Info;
+        } else {
+          console.log(`no addresses[] to get info for ${method}`);
         }
-
-        return Info;
-      } else {
-        console.log(`no addresses[] to get info for ${method}`);
+      } catch (error: any) {
+        console.log(error.message);
+        let waitTime = Math.min(
+          2 ** retryCount * 1000 + Math.round(Math.random() * 1000),
+          maxBackoff
+        );
+        console.log(`Waithing for ${waitTime}ms before retrying...`);
+        await new Promise((resolve) => setTimeout(resolve, waitTime));
+        retryCount++;
       }
-    } catch (error: any) {
-      console.log(error.message);
     }
   };
 
