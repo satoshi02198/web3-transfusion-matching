@@ -171,16 +171,15 @@ const useAdmin = (
   const getAllInfo = async (
     contract: Contract | null,
     method: string,
-    addresses: never[]
+    addresses: string[]
   ) => {
     const maxRetries = 10;
     const maxBackoff = 64000;
-
+    const Info = [];
     let retryCount = 0;
     while (retryCount < maxRetries) {
       try {
         if (contract && addresses.length > 0) {
-          const Info = [];
           for (const address of addresses) {
             const tx = await contract[method](address);
             if (!tx) {
@@ -239,13 +238,20 @@ const useAdmin = (
         }
       } catch (error: any) {
         console.log(error.message);
-        let waitTime = Math.min(
-          2 ** retryCount * 1000 + Math.round(Math.random() * 1000),
-          maxBackoff
-        );
-        console.log(`Waithing for ${waitTime}ms before retrying...`);
-        await new Promise((resolve) => setTimeout(resolve, waitTime));
-        retryCount++;
+        if (error.code === 429) {
+          let waitTime = Math.min(
+            2 ** retryCount * 1000 + Math.round(Math.random() * 1000),
+            maxBackoff
+          );
+          console.log(`Waithing for ${waitTime}ms before retrying...`);
+          await new Promise((resolve) => setTimeout(resolve, waitTime));
+          retryCount++;
+
+          if (retryCount === maxRetries) {
+            console.log(`Max retries reached...Refresh page and try again...`);
+            return Info;
+          }
+        }
       }
     }
   };
