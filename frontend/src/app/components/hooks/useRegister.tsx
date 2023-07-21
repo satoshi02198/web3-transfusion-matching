@@ -42,6 +42,7 @@ const useRegister = (
         stateAsRecipient,
       };
     } catch (error: any) {
+      console.log("catching error on checkStatus() in useRegister()");
       console.log(error.message);
     }
   };

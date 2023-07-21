@@ -174,7 +174,8 @@ const useAdmin = (
         console.log(`no addresses[] to get info for ${method}`);
       }
     } catch (error: any) {
-      console.log(error.message);
+      console.log("catching error on getAllInfo in useAdmin");
+      throw new Error(error);
     }
   };
 
