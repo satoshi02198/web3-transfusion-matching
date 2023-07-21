@@ -4,6 +4,7 @@ import { Contract, ethers } from "ethers";
 import useSWR from "swr";
 import { getEvents, getTimestamp } from "../../../../utils/event";
 import useDataSet from "./useDataSet";
+import { retry } from "../../../../utils/retry";
 
 export type AllDonorInfo = {
   id: number;

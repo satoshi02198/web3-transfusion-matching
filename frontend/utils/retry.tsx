@@ -1,4 +1,8 @@
-const retry = async (fn: Function, maxRetries: number, maxBackoff: number) => {
+export const retry = async (
+  fn: Function,
+  maxRetries: number,
+  maxBackoff: number
+) => {
   let retryCount = 0;
 
   while (retryCount < maxRetries) {
