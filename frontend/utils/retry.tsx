@@ -9,7 +9,7 @@ export const retry = async (
     try {
       return await fn();
     } catch (error: any) {
-      if (error.code === -32603) {
+      if (error.data.error.code === 429) {
         let waitTime = Math.min(
           2 ** retryCount * 1000 + Math.random() * 1000,
           maxBackoff
@@ -18,7 +18,7 @@ export const retry = async (
         await new Promise((resolve) => setTimeout(resolve, waitTime));
         retryCount++;
       } else {
-        throw error;
+        throw error.message; // rethrow the error to be handled by the calling code
       }
     }
   }
