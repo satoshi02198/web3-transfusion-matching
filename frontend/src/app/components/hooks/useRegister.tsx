@@ -2,6 +2,7 @@ import { BrowserProvider, Contract } from "ethers";
 import useSWR from "swr";
 import { getEvents } from "../../../../utils/event";
 import { DataType } from "../../../../utils/toast";
+import { encrypt } from "../../../../utils/encrypt";
 
 const useRegister = (
   contract: Contract | null,
@@ -54,11 +55,18 @@ const useRegister = (
     address: string | undefined
   ) => {
     try {
+      const encryptedName = await encrypt(input.name);
+      console.log("🚀 ~ encryptedName:", encryptedName);
+      const encryptedBloodType = await encrypt(input.bloodType);
+      console.log("🚀 ~ encryptedBloodType:", encryptedBloodType);
       let tx;
       if (reciOrDor === "Donor") {
-        tx = await contract?.registerDonor(input.name, input.bloodType);
+        tx = await contract?.registerDonor(encryptedName, encryptedBloodType);
       } else if (reciOrDor === "Recipient") {
-        tx = await contract?.registerRecipient(input.name, input.bloodType);
+        tx = await contract?.registerRecipient(
+          encryptedName,
+          encryptedBloodType
+        );
       }
       // to deal state change donorAddress after tx, no need to reload
       if (tx) {

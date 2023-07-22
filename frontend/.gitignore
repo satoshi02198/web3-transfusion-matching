@@ -38,3 +38,7 @@ next-env.d.ts
 .vercel
 
 /src/app/components/test
+
+createIdentity.ts
+
+freeText.ts

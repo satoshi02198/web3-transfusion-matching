@@ -5,6 +5,7 @@ import useSWR from "swr";
 import { getEvents, getTimestamp } from "../../../../utils/event";
 import useDataSet from "./useDataSet";
 import { retry } from "../../../../utils/retry";
+import { decrypt } from "../../../../utils/encrypt";
 
 export type AllDonorInfo = {
   id: number;
@@ -33,13 +34,13 @@ type MatchedEventsInfo = {
 type MethodType = "getDonor" | "getRecipient";
 
 const Blood_TYPE_HASH: Record<string, string> = {
-  "0xbc8ad4fa23449205da10b2a086888a16aae2ac121f166bdaf18384f01c5a1923": "A+",
-  "0xdf7476d61b1a156721ba27e1ab032065608e5f4078e0256dca5b79eefc992b6c": "A-",
-  "0x5c824a22c75ee3364219136d475a54e97a9ddcf1807f4545222958ac4dbabbbc": "B+",
-  "0x07c94aa4a0093c1bd658802a46e7cdc3eb138050c59571a1dc1cee71a38bbdbd": "B-",
-  "0x039622a8de431d550cd225238681ea4fc4c3027c40ae1a6c418d871345bb2775": "AB+",
-  "0x1f965545eee3e7c5e0219887bd1886412154930061dfb66d444e3ab5d5e25f91": "AB-",
-  "0xc669aa98d5975cc43653c879a18d9bc4aa8bf51e69f61aeb1d7769216f98009a": "O",
+  [process.env.NEXT_PUBLIC_BLOOD_TYPE1 as string]: "A+",
+  [process.env.NEXT_PUBLIC_BLOOD_TYPE2 as string]: "A-",
+  [process.env.NEXT_PUBLIC_BLOOD_TYPE3 as string]: "B+",
+  [process.env.NEXT_PUBLIC_BLOOD_TYPE4 as string]: "B+",
+  [process.env.NEXT_PUBLIC_BLOOD_TYPE5 as string]: "AB+",
+  [process.env.NEXT_PUBLIC_BLOOD_TYPE6 as string]: "AB-",
+  [process.env.NEXT_PUBLIC_BLOOD_TYPE7 as string]: "O",
 };
 
 // helper to change state number from blockchain to state string
@@ -148,8 +149,8 @@ const useAdmin = (
             const info = {
               id: Number(tx[0]),
               donorAddress: address as string,
-              name: tx[1] as string,
-              bloodType: tx[2] as string,
+              name: await decrypt(tx[1] as string),
+              bloodType: await decrypt(tx[2] as string),
               state: toState(Number(tx[3])),
               time: filteredTimestamp as string,
             };
@@ -159,8 +160,8 @@ const useAdmin = (
             const info = {
               id: Number(tx[0]),
               recipientAddress: address as string,
-              name: tx[1] as string,
-              bloodType: tx[2] as string,
+              name: await decrypt(tx[1] as string),
+              bloodType: await decrypt(tx[2] as string),
               state: toState(Number(tx[3])),
               time: filteredTimestamp as string,
             };
@@ -299,6 +300,9 @@ const useAdmin = (
       for (const log of events) {
         const timestamp = await getTimestamp(log, provider);
         if ("args" in log) {
+          console.log(log.args[2].hash);
+          console.log(log.args[2]);
+
           const res = {
             donorAddress: log.args[0] as string,
             recipientAddress: log.args[1] as string,

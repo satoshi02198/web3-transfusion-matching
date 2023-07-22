@@ -46,7 +46,7 @@ contract Transfusion {
 
     event RegisteredDonor(uint256 indexed id,address indexed donor);
     event RegisteredRecipient(uint256 indexed id,address indexed recipient);
-    event Matched(address indexed donor, address indexed recipient, string indexed bloodType);
+    event Matched(address indexed donor, address indexed recipient, string indexed  bloodType);
 
     constructor(){
         admins[msg.sender] = true;
@@ -133,7 +133,7 @@ contract Transfusion {
     // to register donor
     function registerDonor(string memory _name, string memory _bloodType)public{
         require(donors[msg.sender].state == State.None, "Donor: already registered");
-        
+        console.log(_bloodType);
         donorsNumber ++;
 
         // mapping the address to Donor
@@ -147,6 +147,7 @@ contract Transfusion {
 
         donorsId.push(donorsNumber);
         donorAddresses.push(msg.sender);
+        
 
         // try to match depends on bloodType
         attemptMatchForDonor(msg.sender,_bloodType);
@@ -158,6 +159,7 @@ contract Transfusion {
     // to register recipient
     function registerRecipient(string memory _name, string memory _bloodType) public {
         require(recipients[msg.sender].state == State.None,"Recipient: already registered");
+        console.log(_bloodType);
 
         recipientsNumber ++;
 

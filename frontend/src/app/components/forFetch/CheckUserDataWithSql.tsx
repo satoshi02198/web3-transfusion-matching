@@ -7,6 +7,8 @@ import {
   deleteTable,
   getUserDataByWeb3Address,
 } from "../../../../utils/actions";
+import { decrypt, encrypt } from "../../../../utils/encrypt";
+import IpfsComponent from "../test/components/Ipfs";
 
 const CheckUserDataWithSql: React.FC = ({}) => {
   const [email, setEmail] = useState("");
@@ -41,7 +43,10 @@ const CheckUserDataWithSql: React.FC = ({}) => {
       <Button onClick={async () => await deleteTable("userData")}>
         delete Table
       </Button>
-
+      <Button onClick={async () => await encrypt("B+")}>encrypt</Button>
+      <Button onClick={async () => await decrypt("iL6utBi5+XHj1QiRXV4TVw==")}>
+        decrypto
+      </Button>
       <div>
         <p>UserEmail: {email}</p>
       </div>
