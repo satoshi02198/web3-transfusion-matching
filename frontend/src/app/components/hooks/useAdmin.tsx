@@ -190,7 +190,8 @@ const useAdmin = (
     return await retry(
       () => getAllInfo(contract, method, addresses),
       maxRetries,
-      maxBackoff
+      maxBackoff,
+      "getAllInfo"
     );
   };
 
