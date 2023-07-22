@@ -8,7 +8,6 @@ import {
   getUserDataByWeb3Address,
 } from "../../../../utils/actions";
 import { decrypt, encrypt } from "../../../../utils/encrypt";
-import IpfsComponent from "../test/components/Ipfs";
 
 const CheckUserDataWithSql: React.FC = ({}) => {
   const [email, setEmail] = useState("");
