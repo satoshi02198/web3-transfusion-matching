@@ -1,7 +1,5 @@
 "use server";
 
-import EthCrypto from "eth-crypto";
-
 import nodemailer from "nodemailer";
 import { sql } from "@vercel/postgres";
 
@@ -93,4 +91,3 @@ async function sendThankYouEmail(emailAddress: string, name: string) {
     console.error("Error sending email", error);
   }
 }
-

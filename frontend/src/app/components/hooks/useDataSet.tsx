@@ -9,50 +9,34 @@ const useDataSet = (contract: Contract | null) => {
     () => (contract ? "web3/addresses/status" : null),
 
     async () => {
-      try {
-        const donorAddress = await retry(
-          () => contract?.getDonorAddresses(),
-          10,
-          64000,
-          "getDonorAddressesWithRetry"
-        );
-        const recipientAddress = await retry(
-          () => contract?.getRecipientAddresses(),
-          10,
-          64000,
-          "getDonorAddressesWithRetry"
-        );
-        const donorsStatus = await getStatusArrWithRetries(
-          donorAddress,
-          "getDonorState"
-        );
-        const recipientsStatus = await getStatusArrWithRetries(
-          recipientAddress,
-          "getRecipientState"
-        );
-        // WITHOUT RETRY I GUESS donorAddress and recipientAddress do not need retry
-        // but in case I set up retry with them
-        // const donorAddress = await contract?.getDonorAddresses();
-        // const recipientAddress = await contract?.getRecipientAddresses();
+      const donorAddress = await retry(
+        () => contract?.getDonorAddresses(),
+        10,
+        64000,
+        "getDonorAddressesWithRetry"
+      );
+      const recipientAddress = await retry(
+        () => contract?.getRecipientAddresses(),
+        10,
+        64000,
+        "getDonorAddressesWithRetry"
+      );
+      const donorsStatus = await getStatusArrWithRetries(
+        donorAddress,
+        "getDonorState"
+      );
+      const recipientsStatus = await getStatusArrWithRetries(
+        recipientAddress,
+        "getRecipientState"
+      );
 
-        // const donorsStatus = await statusArr(donorAddress, "getDonorState");
-        // const recipientsStatus = await statusArr(
-        //   recipientAddress,
-        //   "getRecipientState"
-        // );
-
-        return {
-          addresses: { donorAddress, recipientAddress },
-          status: {
-            donorsStatus,
-            recipientsStatus,
-          },
-        };
-      } catch (error: any) {
-        console.log("catching error on useSWR in useDataSet");
-        console.log(error.message);
-        console.log("error code", error.data.error.code);
-      }
+      return {
+        addresses: { donorAddress, recipientAddress },
+        status: {
+          donorsStatus,
+          recipientsStatus,
+        },
+      };
     }
   );
 
@@ -78,7 +62,7 @@ const useDataSet = (contract: Contract | null) => {
         );
       }
     } catch (error: any) {
-      console.log("catching error in statusArr in useDataSet");
+      console.log("catching error in getStatusArr in useDataSet");
       console.log(error.message);
       throw new Error(error.message);
     }
@@ -90,7 +74,6 @@ const useDataSet = (contract: Contract | null) => {
   ) => {
     const maxRetries = 10;
     const maxBackoff = 64000;
-
     return await retry(
       () => getStatusArr(addresses, method),
       maxRetries,

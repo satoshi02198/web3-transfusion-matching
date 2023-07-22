@@ -69,9 +69,7 @@ const useRegister = (
   ) => {
     try {
       const encryptedName = await encrypt(input.name);
-      console.log("🚀 ~ encryptedName:", encryptedName);
       const encryptedBloodType = await encrypt(input.bloodType);
-      console.log("🚀 ~ encryptedBloodType:", encryptedBloodType);
       let tx;
       if (reciOrDor === "Donor") {
         tx = await contract?.registerDonor(encryptedName, encryptedBloodType);

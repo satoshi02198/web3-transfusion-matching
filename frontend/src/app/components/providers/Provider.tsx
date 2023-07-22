@@ -17,6 +17,7 @@ import { ethers } from "ethers";
 import contractAddress from "../../contracts/contract-address-sepolia.json";
 // import contractAddress from "../../contracts/contract-address-localhost.json";
 import transfusionArtifact from "../../contracts/Transfusion.json";
+import { retry } from "../../../../utils/retry";
 
 type ProviderProps = {
   children: React.ReactNode;
@@ -84,10 +85,29 @@ const Web3Provider: React.FC<ProviderProps> = ({ children }) => {
         const data = await contract.checkAdmins(address);
         setIsAdmin(data);
       } catch (error: any) {
+        console.log("Catching error in checkAdmin in Provider");
         console.log(error.message);
+        throw new Error(error.message);
       }
     };
-    checkAdmin();
+
+    let isMounted = true;
+
+    (async () => {
+      try {
+        await retry(() => checkAdmin(), 10, 64000, "checkAdmin");
+      } catch (error: any) {
+        if (isMounted) {
+          console.error(
+            `Error in retry function of checkAdmin: ${error.message}`
+          );
+        }
+      }
+    })();
+
+    return () => {
+      isMounted = false;
+    };
   }, [contract]);
 
   // helper function for connectWallet
