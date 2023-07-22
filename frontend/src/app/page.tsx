@@ -16,7 +16,7 @@ const Home = () => {
   const { contract, contractIsLoading } = useWeb3();
   const { donorAddress, recipientAddress, donorsStatus } = useDataSet(contract);
 
-  const matchingNum = donorsStatus?.filter((state) => state === 3).length;
+  const matchingNum = donorsStatus?.filter((state: any) => state === 3).length;
 
   const pushToInstallWallet = () => {
     return (
