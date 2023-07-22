@@ -22,15 +22,6 @@ const useDataSet = (contract: Contract | null) => {
           64000,
           "getDonorAddressesWithRetry"
         );
-
-        // const donorAddress = await contract?.getDonorAddresses();
-        // const recipientAddress = await contract?.getRecipientAddresses();
-
-        // const donorsStatus = await statusArr(donorAddress, "getDonorState");
-        // const recipientsStatus = await statusArr(
-        //   recipientAddress,
-        //   "getRecipientState"
-        // );
         const donorsStatus = await getStatusArrWithRetries(
           donorAddress,
           "getDonorState"
@@ -39,6 +30,16 @@ const useDataSet = (contract: Contract | null) => {
           recipientAddress,
           "getRecipientState"
         );
+        // WITHOUT RETRY I GUESS donorAddress and recipientAddress do not need retry
+        // but in case I set up retry with them
+        // const donorAddress = await contract?.getDonorAddresses();
+        // const recipientAddress = await contract?.getRecipientAddresses();
+
+        // const donorsStatus = await statusArr(donorAddress, "getDonorState");
+        // const recipientsStatus = await statusArr(
+        //   recipientAddress,
+        //   "getRecipientState"
+        // );
 
         return {
           addresses: { donorAddress, recipientAddress },
@@ -65,12 +66,9 @@ const useDataSet = (contract: Contract | null) => {
             return Number(stateArr);
           }
         });
-        console.log("🚀 ~ stateMapping ~ stateMapping:", stateMapping);
-
         const data = (await Promise.all(stateMapping)).filter(
           (state): state is number => state !== undefined
         );
-
         if (!data) return;
         // object to map method to state-setting
         return data;
@@ -85,7 +83,7 @@ const useDataSet = (contract: Contract | null) => {
       throw new Error(error.message);
     }
   };
-
+  // GET STATUS ARRAY WITH RETRY retry() is located in utils/retry.tsx
   const getStatusArrWithRetries = async (
     addresses: string[],
     method: string
@@ -97,7 +95,7 @@ const useDataSet = (contract: Contract | null) => {
       () => getStatusArr(addresses, method),
       maxRetries,
       maxBackoff,
-      method + "getStatusArr"
+      method + " of getStatusArr"
     );
   };
 
