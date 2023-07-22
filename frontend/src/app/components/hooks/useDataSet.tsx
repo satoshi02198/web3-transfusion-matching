@@ -92,11 +92,12 @@ const useDataSet = (contract: Contract | null) => {
   ) => {
     const maxRetries = 10;
     const maxBackoff = 64000;
+
     return await retry(
       () => getStatusArr(addresses, method),
       maxRetries,
       maxBackoff,
-      "getStatusArr"
+      method + "getStatusArr"
     );
   };
 
