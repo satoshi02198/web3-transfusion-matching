@@ -82,6 +82,7 @@ const useDataSet = (contract: Contract | null) => {
     } catch (error: any) {
       console.log("catching error in statusArr in useDataSet");
       console.log(error.message);
+      throw new Error(error.message);
     }
   };
 
