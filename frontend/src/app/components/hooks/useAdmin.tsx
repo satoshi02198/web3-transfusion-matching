@@ -96,7 +96,10 @@ const useAdmin = (
           "getRecipient",
           recipientAddress
         );
-        const eventsOfMatched = await getMatchedEvents(contract, "Matched");
+        const eventsOfMatched = await getMatchedEventsWithRetries(
+          contract,
+          "Matched"
+        );
         return {
           allDonorInfo,
           allRecipientInfo,
@@ -176,6 +179,7 @@ const useAdmin = (
       }
     } catch (error: any) {
       console.log("catching error on getAllInfo in useAdmin");
+      console.error(error.message);
       throw new Error(error);
     }
   };
@@ -196,95 +200,6 @@ const useAdmin = (
     );
   };
 
-  // to get all Infomations depends on the arguments "getDonor" and "getRecipient"
-  // const getAllInfo = async (
-  //   contract: Contract | null,
-  //   method: string,
-  //   addresses: string[]
-  // ) => {
-  //   const maxRetries = 10;
-  //   const maxBackoff = 64000;
-  //   const Info = [];
-  //   let retryCount = 0;
-  //   while (retryCount < maxRetries) {
-  //     try {
-  //       if (contract && addresses.length > 0) {
-  //         for (const address of addresses) {
-  //           const tx = await contract[method](address);
-  //           if (!tx) {
-  //             continue;
-  //           }
-  //           // to get timestamp
-  //           const eventSetters: Record<MethodType, string> = {
-  //             getDonor: "RegisteredDonor",
-  //             getRecipient: "RegisteredRecipient",
-  //           };
-  //           const eventSetter = eventSetters[method as MethodType];
-
-  //           const events = await getEvents(contract, eventSetter, provider);
-  //           if (!events) {
-  //             throw new Error(`no events of ${method}`);
-  //           }
-  //           const timestamps = [];
-  //           for (const log of events) {
-  //             // to make sure args in log
-  //             if ("args" in log && log.args[1] === address) {
-  //               const res = await getTimestamp(log, provider);
-  //               timestamps.push(res);
-  //             }
-  //           }
-  //           const filteredTimestamp = timestamps.filter((event) => {
-  //             return event !== undefined;
-  //           })[0];
-  //           if (method === "getDonor") {
-  //             const info = {
-  //               id: Number(tx[0]),
-  //               donorAddress: address as string,
-  //               name: tx[1] as string,
-  //               bloodType: tx[2] as string,
-  //               state: toState(Number(tx[3])),
-  //               time: filteredTimestamp as string,
-  //             };
-
-  //             Info.push(info);
-  //           } else if (method === "getRecipient") {
-  //             const info = {
-  //               id: Number(tx[0]),
-  //               recipientAddress: address as string,
-  //               name: tx[1] as string,
-  //               bloodType: tx[2] as string,
-  //               state: toState(Number(tx[3])),
-  //               time: filteredTimestamp as string,
-  //             };
-
-  //             Info.push(info);
-  //           }
-  //         }
-
-  //         return Info;
-  //       } else {
-  //         console.log(`no addresses[] to get info for ${method}`);
-  //       }
-  //     } catch (error: any) {
-  //       console.log(error.message);
-  //       if (error.code === 429) {
-  //         let waitTime = Math.min(
-  //           2 ** retryCount * 1000 + Math.round(Math.random() * 1000),
-  //           maxBackoff
-  //         );
-  //         console.log(`Waithing for ${waitTime}ms before retrying...`);
-  //         await new Promise((resolve) => setTimeout(resolve, waitTime));
-  //         retryCount++;
-
-  //         if (retryCount === maxRetries) {
-  //           console.log(`Max retries reached...Refresh page and try again...`);
-  //           return Info;
-  //         }
-  //       }
-  //     }
-  //   }
-  // };
-
   // to get Matching events and set them to matchingInfo
   const getMatchedEvents = async (
     contract: Contract | null,
@@ -300,9 +215,6 @@ const useAdmin = (
       for (const log of events) {
         const timestamp = await getTimestamp(log, provider);
         if ("args" in log) {
-          console.log(log.args[2].hash);
-          console.log(log.args[2]);
-
           const res = {
             donorAddress: log.args[0] as string,
             recipientAddress: log.args[1] as string,
@@ -314,8 +226,25 @@ const useAdmin = (
       }
       return result;
     } catch (error: any) {
+      console.log("catching error on getMatchedEvents in useAdmin");
       console.log(error.message);
+      throw new Error(error.message);
     }
+  };
+
+  //  to get matched events information with retry located utils/retry.tsx
+  const getMatchedEventsWithRetries = async (
+    contract: Contract | null,
+    eventName: string
+  ) => {
+    const maxRetries = 10;
+    const maxBackoff = 64000;
+    return await retry(
+      () => getMatchedEvents(contract, eventName),
+      maxRetries,
+      maxBackoff,
+      "getMatchedEvents"
+    );
   };
 
   const {

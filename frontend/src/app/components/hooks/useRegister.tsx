@@ -3,6 +3,7 @@ import useSWR from "swr";
 import { getEvents } from "../../../../utils/event";
 import { DataType } from "../../../../utils/toast";
 import { encrypt } from "../../../../utils/encrypt";
+import { retry } from "../../../../utils/retry";
 
 const useRegister = (
   contract: Contract | null,
@@ -12,7 +13,7 @@ const useRegister = (
   const { data, isLoading: stateIsLoading } = useSWR(
     () => (contract && address ? "web3/register" : null),
     async () => {
-      const state = await checkStatus(address);
+      const state = await checkStatusWithRetries(address);
       return state;
     }
   );
@@ -45,7 +46,19 @@ const useRegister = (
     } catch (error: any) {
       console.log("catching error on checkStatus() in useRegister()");
       console.log(error.message);
+      throw new Error(error.message);
     }
+  };
+
+  const checkStatusWithRetries = async (address: string | undefined) => {
+    const maxRetries = 10;
+    const maxBackoff = 64000;
+    return await retry(
+      () => checkStatus(address),
+      maxRetries,
+      maxBackoff,
+      "checkStatus"
+    );
   };
 
   // helper function to register
