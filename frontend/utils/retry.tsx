@@ -5,13 +5,11 @@ export const retry = async (
   identifier: string
 ) => {
   let retryCount = 0;
-
   while (retryCount < maxRetries) {
     try {
       return await fn();
     } catch (error: any) {
       console.log(`catching error on ${identifier} in retry function`);
-      //   if (error.data.error.code === 429) {
       let waitTime = Math.min(
         2 ** retryCount * 1000 + Math.random() * 1000,
         maxBackoff
@@ -19,9 +17,6 @@ export const retry = async (
       console.log(`Waiting for ${waitTime}ms before retrying...`);
       await new Promise((resolve) => setTimeout(resolve, waitTime));
       retryCount++;
-      //   } else {
-      //     throw error.message; // rethrow the error to be handled by the calling code
-      //   }
     }
   }
   throw new Error(`Failed after ${maxRetries} retries`);
