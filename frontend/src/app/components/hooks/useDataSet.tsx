@@ -39,6 +39,7 @@ const useDataSet = (contract: Contract | null) => {
       if (contract && method in contract) {
         const stateMapping = addresses?.map(async (address: string) => {
           const stateArr = await contract[method](address);
+          console.log("🚀 ~ stateMapping ~ stateArr:", stateArr);
           if (stateArr) {
             return Number(stateArr);
           }
@@ -47,6 +48,8 @@ const useDataSet = (contract: Contract | null) => {
         const data = (await Promise.all(stateMapping)).filter(
           (state): state is number => state !== undefined
         );
+        console.log("🚀 ~ statusArr ~ data:", data);
+
         if (!data) return;
         // object to map method to state-setting
         return data;
