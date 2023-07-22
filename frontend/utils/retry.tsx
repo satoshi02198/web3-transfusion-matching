@@ -1,7 +1,8 @@
 export const retry = async (
   fn: Function,
   maxRetries: number,
-  maxBackoff: number
+  maxBackoff: number,
+  identifier: string
 ) => {
   let retryCount = 0;
 
@@ -9,7 +10,7 @@ export const retry = async (
     try {
       return await fn();
     } catch (error: any) {
-      console.log("catching error in retry function");
+      console.log(`catching error on ${identifier} in retry function`);
       //   if (error.data.error.code === 429) {
       let waitTime = Math.min(
         2 ** retryCount * 1000 + Math.random() * 1000,
