@@ -35,19 +35,28 @@ const Home = () => {
     );
   };
 
+  const renderList = [
+    { tag: "Donors", value: donorsStatus?.length },
+    { tag: "Recipients", value: recipientAddress?.length },
+    { tag: "Matching(pair)", value: matchingNum },
+  ];
+
   return (
     <div className="h-screen py-2 sm:px-10">
       <div className="flex flex-col space-y-2 md:flex-row md:space-x-2 md:space-y-0  items-center justify-between text-center mx-auto">
-        <RenderNumber tag={"Donors"}>
-          {contractIsLoading ? (
-            <Skeleton height="4" width="10" />
-          ) : contract ? (
-            <p>{donorAddress?.length ?? ""}</p>
-          ) : (
-            <div>{pushToInstallWallet()}</div>
-          )}
-        </RenderNumber>
-        <RenderNumber tag={"Recipients"}>
+        {renderList.map(({ tag, value }) => (
+          <RenderNumber tag={tag} key={tag}>
+            {contractIsLoading ? (
+              <Skeleton height="4" width="20" />
+            ) : contract ? (
+              <p>{value ?? ""}</p>
+            ) : (
+              <div>{pushToInstallWallet()}</div>
+            )}
+          </RenderNumber>
+        ))}
+
+        {/* <RenderNumber tag={"Recipients"}>
           {contractIsLoading ? (
             <Skeleton height="4" width="20" />
           ) : contract ? (
@@ -64,7 +73,7 @@ const Home = () => {
           ) : (
             <div>{pushToInstallWallet()}</div>
           )}
-        </RenderNumber>
+        </RenderNumber> */}
 
         {/* <div className="px-2 py-6 bg-slate-200 w-[90%] rounded-md">
           <h1 className="font-bold">Donor number</h1>
