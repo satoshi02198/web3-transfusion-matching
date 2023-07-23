@@ -55,57 +55,6 @@ const Home = () => {
             )}
           </RenderNumber>
         ))}
-
-        {/* <RenderNumber tag={"Recipients"}>
-          {contractIsLoading ? (
-            <Skeleton height="4" width="20" />
-          ) : contract ? (
-            <p>{recipientAddress?.length ?? ""}</p>
-          ) : (
-            <div>{pushToInstallWallet()}</div>
-          )}
-        </RenderNumber>
-        <RenderNumber tag={"Matching(pair)"}>
-          {contractIsLoading ? (
-            <Skeleton height="4" width="20" />
-          ) : contract ? (
-            <p>{matchingNum ?? ""}</p>
-          ) : (
-            <div>{pushToInstallWallet()}</div>
-          )}
-        </RenderNumber> */}
-
-        {/* <div className="px-2 py-6 bg-slate-200 w-[90%] rounded-md">
-          <h1 className="font-bold">Donor number</h1>
-
-          {contractIsLoading ? (
-            <Skeleton height="4" width="10" />
-          ) : contract ? (
-            <p>{donorAddress?.length ?? ""}</p>
-          ) : (
-            <div>{pushToInstallWallet()}</div>
-          )}
-        </div> */}
-        {/* <div className="px-2 py-6 bg-slate-200 w-[90%] rounded-md">
-          <h1 className="font-bold">Recipient numbers</h1>
-          {contractIsLoading ? (
-            <Skeleton height="4" width="20" />
-          ) : contract ? (
-            <p>{recipientAddress?.length ?? ""}</p>
-          ) : (
-            <div>{pushToInstallWallet()}</div>
-          )}
-        </div>
-        <div className="px-2 py-6 bg-slate-200 w-[90%] rounded-md">
-          <h1 className="font-bold">Matching number(pair)</h1>
-          {contractIsLoading ? (
-            <Skeleton height="4" width="20" />
-          ) : contract ? (
-            <p>{matchingNum ?? ""}</p>
-          ) : (
-            <div>{pushToInstallWallet()}</div>
-          )}
-        </div> */}
       </div>
       <Image
         src="/love.jpg"
