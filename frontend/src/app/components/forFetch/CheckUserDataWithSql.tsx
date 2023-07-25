@@ -36,7 +36,7 @@ const CheckUserDataWithSql: React.FC = ({}) => {
         </Button>
         {/* <Button onClick={async () => await createTable()}>create table</Button> */}
 
-        <Button
+        {/* <Button
           variant={"outline"}
           className="bg-slate-200"
           onClick={async () => {
@@ -47,7 +47,7 @@ const CheckUserDataWithSql: React.FC = ({}) => {
           }}
         >
           Delete data with web3Address
-        </Button>
+        </Button> */}
       </div>
       <div className="mt-4">
         <p>UserEmail: {email}</p>
