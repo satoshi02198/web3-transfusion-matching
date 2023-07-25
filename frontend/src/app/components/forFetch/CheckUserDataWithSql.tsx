@@ -2,12 +2,9 @@ import React, { useState } from "react";
 import { Button } from "@/shadcnComponents/button";
 import { Input } from "@/shadcnComponents/input";
 import {
-  createTable,
-  deleteData,
-  deleteTable,
+  deleteDataWithWeb3Address,
   getUserDataByWeb3Address,
 } from "../../../../utils/actions";
-import { decrypt, encrypt } from "../../../../utils/encrypt";
 
 const CheckUserDataWithSql: React.FC = ({}) => {
   const [email, setEmail] = useState("");
@@ -23,30 +20,36 @@ const CheckUserDataWithSql: React.FC = ({}) => {
         value={input}
         onChange={({ target: { value } }) => setInput(value)}
       />
-      <Button
-        onClick={async () => {
-          const res = await getUserDataByWeb3Address(input);
-          const { rows } = res;
-          const email = rows[0]?.email;
-          setEmail(email);
-        }}
-      >
-        Check Email
-      </Button>
-      <Button
-        onClick={async () => await deleteData("userData5", "Email", "awat@")}
-      >
-        Delete data
-      </Button>
-      <Button onClick={() => createTable()}>create Table</Button>
-      <Button onClick={async () => await deleteTable("userData")}>
-        delete Table
-      </Button>
-      <Button onClick={async () => await encrypt("B+")}>encrypt</Button>
-      <Button onClick={async () => await decrypt("iL6utBi5+XHj1QiRXV4TVw==")}>
-        decrypto
-      </Button>
-      <div>
+      <div className="space-x-2">
+        <Button
+          variant={"outline"}
+          className="bg-slate-200"
+          onClick={async () => {
+            const res = await getUserDataByWeb3Address(input);
+            const { rows } = res;
+            console.log(rows);
+            const email = rows[0]?.email;
+            setEmail(email);
+          }}
+        >
+          Check Email
+        </Button>
+        {/* <Button onClick={async () => await createTable()}>create table</Button> */}
+
+        <Button
+          variant={"outline"}
+          className="bg-slate-200"
+          onClick={async () => {
+            const res = await deleteDataWithWeb3Address(input);
+            if (res) {
+              alert("data successfully deleted");
+            }
+          }}
+        >
+          Delete data with web3Address
+        </Button>
+      </div>
+      <div className="mt-4">
         <p>UserEmail: {email}</p>
       </div>
     </div>

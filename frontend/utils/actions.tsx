@@ -6,7 +6,7 @@ import { sql } from "@vercel/postgres";
 // FOR VERCEL POSTGRES
 export const createTable = async () => {
   const res =
-    await sql`CREATE TABLE userData5 (Web3Address varchar(255), Email varchar(255), Name varchar(255), AsWhat varchar(255));`;
+    await sql`CREATE TABLE users (Web3Address varchar(255), Email varchar(255), Name varchar(255), AsWhat varchar(255));`;
   console.log("🚀 ~ createTable ~ res:", res);
 };
 
@@ -19,7 +19,7 @@ export const insertData = async (
 ) => {
   try {
     const res =
-      await sql`INSERT INTO userData5 (Web3Address, Email, Name, AsWhat) VALUES (${web3Address},${emailAddress},${name},${donorOrRecipient});`;
+      await sql`INSERT INTO users (Web3Address, Email, Name, AsWhat) VALUES (${web3Address},${emailAddress},${name},${donorOrRecipient});`;
     console.log("🚀 ~ insertData ~ res:", res);
     await sendThankYouEmail(emailAddress, name);
   } catch (error: any) {
@@ -33,27 +33,19 @@ export const getUserDataByWeb3Address = async (
   web3Address: string | undefined
 ) => {
   console.log(web3Address);
-  const res =
-    await sql`SELECT * FROM userData5 WHERE Web3Address=${web3Address}`;
+  const res = await sql`SELECT * FROM users WHERE Web3Address=${web3Address}`;
   console.log("🚀 ~ getUserDataByWeb3Address ~ res:", res);
   return res;
 };
 
 // TO DELETE DATA
-export async function deleteData(
-  dataName: string,
-  where: string,
-  value: string
-) {
-  // ${where} part cann't be paramiralised
-  const res = await sql`DELETE FROM userData5 WHERE ${where}=${value}`;
+export async function deleteDataWithWeb3Address(value: string) {
+  // ${where} ${dataName} parts cann't be paramiralised
+  // https://node-postgres.com/features/queries#parameterized-query
+  // const res = await sql`DELETE FROM ${dataName} WHERE ${where}=${value}`;
+  const res = await sql`DELETE FROM users WHERE Web3Address=${value}`;
   console.log("🚀 ~ deleteData ~ res:", res);
-}
-
-// TO DELETE TABLE
-export async function deleteTable(tableName: string) {
-  const res = await sql`DROP TABLE satoshi;`;
-  console.log("🚀 ~ deleteTable ~ res:", res);
+  return res;
 }
 
 // TO SEND THANK YOU EMAIL
